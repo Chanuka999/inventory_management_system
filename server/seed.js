@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
-import User from "./models/user";
-import connectDb from "./db/connection";
+import User from "./models/user.js";
+import connectDb from "./db/connection.js";
 
 const register = async () => {
   try {
