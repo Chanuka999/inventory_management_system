@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import "./Login.css";
 import axios from "axios";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
+import { useAuth } from "../contex/AuthContex";
 
 const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoding] = useState();
   const [error, setError] = useState();
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const emailHanddler = (event) => {
     setEmail(event.target.value);
@@ -23,21 +27,29 @@ const Login = () => {
     setError(null);
 
     try {
-      const responce = await axios.post("http://localhost:5000/api/login", {
-        email: email,
-      });
-      if (responce.data.status) {
-        await Login(responce.data.user, responce.data.token);
+      const responce = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+      console.log(responce.data);
+
+      if (responce.data.success) {
+        await login(responce.data.user, responce.data.token);
         if (responce.data.user.role === "admin") {
-          Navigate("/admin/dashboard");
+          navigate("/admin/dashboard");
         } else {
-          Navigate("/customer/dashboard");
+          navigate("/customer/dashboard");
         }
       } else {
-        alert(responce.data.message);
+        alert(responce.data.error);
       }
     } catch (error) {
-      setError(error.message);
+      if (error.responce) {
+        setError(error.responce.data.message);
+      }
     } finally {
       setLoding(false);
     }
@@ -64,6 +76,11 @@ const Login = () => {
         </div>
         <div className="border shadow-xl p-6 w-80 bg-white/20 backdrop-blur-md rounded-lg">
           <h2 className="text-2xl font-bold mb-4 text-white">Login</h2>
+          {error && (
+            <div className="bg-red-200 text-red-700 p-2 mb-4 rounded">
+              {error}
+            </div>
+          )}
           <form onSubmit={handderSubmit}>
             <div className="mb-4">
               <label className="block text-white">Email</label>
@@ -91,7 +108,7 @@ const Login = () => {
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded transition duration-300"
               >
-                Login
+                {loading ? "Loading" : "Login"}
               </button>
             </div>
           </form>
