@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Root from "./utils/Root";
 import Login from "./pages/Login";
 import ProtectedRoutes from "./utils/ProtectedRoute";
@@ -20,6 +20,20 @@ function App() {
             }
           >
             <Route index element={<h1>Summery of dashboard</h1>} />
+
+            <Route path="categories" element={<h1>categories</h1>} />
+
+            <Route path="products" element={<h1>products</h1>} />
+
+            <Route path="suppliers" element={<h1>suppliers</h1>} />
+
+            <Route path="orders" element={<h1>orders</h1>} />
+
+            <Route path="users" element={<h1>users</h1>} />
+
+            <Route path="profile" element={<h1>profile</h1>} />
+
+            <Route path="logout" element={<h1>logout</h1>} />
           </Route>
           <Route
             path="/customer/dashboard"
