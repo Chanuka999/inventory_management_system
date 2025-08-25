@@ -126,7 +126,7 @@ const Categories = () => {
 
   if (loading) return <div>Loding....</div>;
   return (
-    <div className="p-4">
+    <div className="bg-green-300 p-4">
       <h1 className="text-2xl font-bold mb-8">Category Management</h1>
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="lg:w-1/3">
