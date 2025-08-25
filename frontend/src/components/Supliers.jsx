@@ -22,7 +22,7 @@ const Supliers = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/category/add",
+        "http://localhost:5000/api/supplier/add",
 
         formData,
         {
@@ -82,7 +82,7 @@ const Supliers = () => {
               <input
                 type="email"
                 name="email"
-                value={formData.name}
+                value={formData.email}
                 onChange={handdleChange}
                 placeholder="Supplier email"
                 className="border p-1 bg-white rounded px-4"
@@ -90,7 +90,7 @@ const Supliers = () => {
               <input
                 type="number"
                 name="number"
-                value={formData.name}
+                value={formData.number}
                 onChange={handdleChange}
                 placeholder="Supplier Phone number"
                 className="border p-1 bg-white rounded px-4"
@@ -98,7 +98,7 @@ const Supliers = () => {
               <input
                 type="address"
                 name="address"
-                value={formData.name}
+                value={formData.address}
                 onChange={handdleChange}
                 placeholder="Supplier address"
                 className="border p-1 bg-white rounded px-4"
