@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useEffect } from "react";
 
 const Supliers = () => {
   const [addEditModel, setAddEditModel] = useState(null);
+  const [loading, setLoading] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,6 +19,29 @@ const Supliers = () => {
       [name]: value,
     }));
   };
+
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const responce = await axios.get("http://localhost:5000/api/category", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+        },
+      });
+      console.log(responce.data.categories);
+      setCategories(responce.data.categories);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching categories", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   const handdleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +60,12 @@ const Supliers = () => {
       if (response.data.success) {
         alert("supplier added successfully");
         setAddEditModel(null);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          address: "",
+        });
       } else {
         console.error("Error editing suplier:", response.data);
         alert("error editing suplier.please try again.");
