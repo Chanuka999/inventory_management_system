@@ -28,4 +28,16 @@ const addSupplier = async (req, res) => {
   }
 };
 
-export { addSupplier };
+const getSuppliers = async (req, res) => {
+  try {
+    const supliers = await Supplier.find();
+    return res.status(200).json({ success: true, supliers });
+  } catch (error) {
+    console.error("Error fetching supliers:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "server error in getting" });
+  }
+};
+
+export { addSupplier, getSuppliers };
