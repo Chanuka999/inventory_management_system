@@ -6,6 +6,7 @@ import ProtectedRoutes from "./utils/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./components/Categories";
 import Supliers from "./components/Supliers";
+import Product from "./components/Product";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
 
             <Route path="categories" element={<Categories />} />
 
-            <Route path="products" element={<h1>products</h1>} />
+            <Route path="products" element={<Product />} />
 
             <Route path="suppliers" element={<Supliers />} />
 
