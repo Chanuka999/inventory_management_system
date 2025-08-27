@@ -3,12 +3,14 @@ import authMiddleware from "../middlewhere/authMiddleware.js";
 import {
   addSupplier,
   getSuppliers,
+  updateSupplier,
+  deleteSupplier,
 } from "../controllers/supplierController.js";
 const router = express();
 
 router.post("/add", authMiddleware, addSupplier);
 router.get("/", authMiddleware, getSuppliers);
-// router.put("/:id", authMiddleware, updateCategory);
-// router.delete("/:id", authMiddleware, deleteCategory);
+router.put("/:id", authMiddleware, updateSupplier);
+router.delete("/:id", authMiddleware, deleteSupplier);
 
 export default router;
