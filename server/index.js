@@ -5,6 +5,7 @@ import connectDb from "./db/connection.js";
 import authRoutes from "./routes/auth.js";
 import categoryRoutes from "./routes/category.js";
 import supplierRoutes from "./routes/suplier.js";
+import ProtectedRoute from "../frontend/src/utils/ProtectedRoute.jsx";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ const PORT = process.env.PORT;
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/supplier", supplierRoutes);
+app.use("/api/products", ProtectedRoute);
 
 app.listen(PORT, () => {
   connectDb();
