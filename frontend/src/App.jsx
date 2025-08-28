@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Categories from "./components/Categories";
 import Supliers from "./components/Supliers";
 import Product from "./components/Product";
+import Logout from "./components/Logout";
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
 
             <Route path="profile" element={<h1>profile</h1>} />
 
-            <Route path="logout" element={<h1>logout</h1>} />
+            <Route path="logout" element={<Logout />} />
           </Route>
           <Route
             path="/customer/dashboard"
