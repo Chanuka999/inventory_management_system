@@ -7,6 +7,7 @@ const Product = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
+    description: "",
     price: "",
     stock: "",
     categoryId: "",
@@ -45,47 +46,48 @@ const Product = () => {
   }, []);
 
   const handdleChange = (e) => {
-    const [name, value] = e.target;
+    const { name, value, type } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "number" ? value.replace(/[^0-9.]/g, "") : value,
     }));
   };
 
-    const handdleSubmit = async (e) => {
+  const handdleSubmit = async (e) => {
     e.preventDefault();
-   
-      try {
-        const response = await axios.post(
-          "http://localhost:5000/api/products/add",
 
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
-            },
-          }
-        );
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/products/add",
 
-        if (response.data.success) {
-          //fetchSuppliers();
-          alert("Product added successfully");
-          opentModel(false)
-          setAddModel(false);
-          setFormData({
-            name: "",
-            email: "",
-            phone: "",
-            address: "",
-          });
-        } else {
-          //  console.error("Error editing suplier:", response.data);
-          alert("error adding products.please try again.");
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+          },
         }
-      } catch (error) {
-        console.error("Error adding suplier ", error);
-        alert("Error adding supplier,please try again");
+      );
+
+      if (response.data.success) {
+        //fetchSuppliers();
+        alert("Product added successfully");
+        setOpenModel(false);
+        // setAddModel(false);
+        setFormData({
+          name: "",
+          description: "",
+          price: "",
+          stock: "",
+          categoryId: "",
+          supplierId: "",
+        });
+      } else {
+        //  console.error("Error editing suplier:", response.data);
+        alert("error adding products.please try again.");
       }
+    } catch (error) {
+      console.error("Error adding suplier ", error);
+      alert("Error adding product,please try again");
     }
   };
   return (
@@ -129,25 +131,28 @@ const Product = () => {
                 type="text"
                 placeholder="Description"
                 name="description"
-                value={formData.email}
+                value={formData.description}
                 onChange={handdleChange}
                 className="border p-1 bg-white rounded px-4"
               />
               <input
                 type="number"
                 name="price"
-                value={formData.number}
+                value={formData.price}
                 onChange={handdleChange}
-                // placeholder="Supplier Address"
                 className="border p-1 bg-white rounded px-4"
+                min="0"
+                step="any"
               />
               <input
                 type="number"
                 name="stock"
-                // value={formData.address}
+                value={formData.stock}
                 onChange={handdleChange}
                 placeholder="Enter stock"
                 className="border p-1 bg-white rounded px-4"
+                min="0"
+                step="1"
               />
 
               <div className="w-full border">
