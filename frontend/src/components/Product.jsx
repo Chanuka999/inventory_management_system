@@ -5,6 +5,7 @@ const Product = () => {
   const [opentModel, setOpenModel] = useState(false);
   const [categories, setCategories] = useState([]);
   const [editProduct, setEditProduct] = useState(null);
+  const [filterProducts, setFilterProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ const Product = () => {
         setSuppliers(responce.data.supliers);
         setCategories(responce.data.categories);
         setProducts(responce.data.products);
+        setFilterProducts(responce.data.products);
       } else {
         console.error("Error fetching products:", responce.data.message);
         alert("Error fetching products.please try again");
@@ -124,6 +126,14 @@ const Product = () => {
       categoryId: "",
       supplierId: "",
     });
+  };
+
+  const handdleSearch = (e) => {
+    setFilterProducts(
+      products.filter((product) =>
+        product.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    );
   };
 
   const handdleSubmit = async (e) => {
@@ -224,7 +234,7 @@ const Product = () => {
           type="text "
           placeholder="serch"
           className="border p-1 bg-white rounded px-4"
-          // onChange={handdleSearch}
+          onChange={handdleSearch}
         />
         <button
           className="px-4 py-1.5 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-900"
@@ -248,49 +258,52 @@ const Product = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => (
-              <tr key={product._id}>
-                <td className="border border-gray-300 p-2">{index + 1}</td>
-                <td className="border border-gray-300 p-2">{product.name}</td>
-                <td className="border border-gray-300 p-2">
-                  {product.categoryId.categoryName}
-                </td>
-                <td className="border border-gray-300 p-2">
-                  {product.supplierId.name}
-                </td>
-                <td className="border border-gray-300 p-2">{product.price}</td>
-                <td className="border border-gray-300 p-2">
-                  <span className="px-2 py-1 rounded-full font-semibold">
-                    {product.stock == 0 ? (
-                      <span className="text-green-500">{product.stock}</span>
-                    ) : product.stock < 5 ? (
-                      <span className="text-yellow-100 text-yellow-600">
-                        {product.stock}
-                      </span>
-                    ) : (
-                      <span className="text-green-100">{product.stock}</span>
-                    )}
-                  </span>
-                </td>
-                <td className="border border-gray-300 p-2">
-                  <button
-                    className="px-2 py-1 bg-yellow-500 text-white rounded cursor-pointer mr-2"
-                    onClick={() => handdleEdit(product)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="px-2 py-1 bg-red-500 text-white rounded cursor-pointer"
-                    onClick={() => handdleDelete(product._id)}
-                  >
-                    delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filterProducts &&
+              filterProducts.map((product, index) => (
+                <tr key={product._id}>
+                  <td className="border border-gray-300 p-2">{index + 1}</td>
+                  <td className="border border-gray-300 p-2">{product.name}</td>
+                  <td className="border border-gray-300 p-2">
+                    {product.categoryId.categoryName}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {product.supplierId.name}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    {product.price}
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    <span className="px-2 py-1 rounded-full font-semibold">
+                      {product.stock == 0 ? (
+                        <span className="text-green-500">{product.stock}</span>
+                      ) : product.stock < 5 ? (
+                        <span className="text-yellow-100 text-yellow-600">
+                          {product.stock}
+                        </span>
+                      ) : (
+                        <span className="text-green-100">{product.stock}</span>
+                      )}
+                    </span>
+                  </td>
+                  <td className="border border-gray-300 p-2">
+                    <button
+                      className="px-2 py-1 bg-yellow-500 text-white rounded cursor-pointer mr-2"
+                      onClick={() => handdleEdit(product)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="px-2 py-1 bg-red-500 text-white rounded cursor-pointer"
+                      onClick={() => handdleDelete(product._id)}
+                    >
+                      delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
-        {/* {filteredSuppliers.length === 0 && <div>No record</div>} */}
+        {filterProducts.length === 0 && <div>No record</div>}
       </div>
 
       {opentModel && (
