@@ -15,6 +15,7 @@ const productSchema = new mongoose.Schema({
     ref: "Supplier",
     required: true,
   },
+  isDeleted: { type: Boolean, default: false },
 });
 
 const ProductModel = mongoose.model("Product", productSchema);
