@@ -4,7 +4,9 @@ import axios from "axios";
 const Product = () => {
   const [opentModel, setOpenModel] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [editProduct, setEditProduct] = useState(null);
   const [suppliers, setSuppliers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -21,7 +23,14 @@ const Product = () => {
           Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
         },
       });
-      setSuppliers(responce.data.supliers);
+      if (responce.data.success) {
+        setSuppliers(responce.data.supliers);
+        setCategories(responce.data.categories);
+        setProducts(responce.data.products);
+      } else {
+        console.error("Error fetching products:", responce.data.message);
+        alert("Error fetching products.please try again");
+      }
     } catch (error) {
       console.error("Error fetching suppliers", error);
     }
@@ -53,41 +62,158 @@ const Product = () => {
     }));
   };
 
+  const handdleEdit = (product) => {
+    setOpenModel(true);
+    setEditProduct(product._id);
+    setFormData({
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      stock: product.stock,
+      categoryId: product.categoryId._id,
+      supplierId: product.supplierId._id,
+    });
+  };
+
+  // Fix: Add handdleDelete for products
+  const handdleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?"
+    );
+    if (confirmDelete) {
+      try {
+        const response = await axios.delete(
+          `http://localhost:5000/api/products/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+            },
+          }
+        );
+        if (response.data.success) {
+          alert("Product deleted successfully");
+          fetchProducts();
+        } else {
+          alert(
+            `Error deleting product: ${
+              response.data.message || "please try again."
+            }`
+          );
+        }
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          alert(`Error deleting product: ${error.response.data.message}`);
+        } else {
+          alert("Error deleting product, please try again");
+        }
+      }
+    }
+  };
+  const closeModel = () => {
+    setOpenModel(false);
+    setEditProduct(null);
+    setFormData({
+      name: "",
+      description: "",
+      price: "",
+      stock: "",
+      categoryId: "",
+      supplierId: "",
+    });
+  };
+
   const handdleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/products/add",
+    // Frontend validation for required fields
+    if (
+      !formData.name.trim() ||
+      !formData.description.trim() ||
+      !formData.price ||
+      !formData.stock ||
+      !formData.categoryId ||
+      !formData.supplierId
+    ) {
+      alert("Please fill in all fields and select category and supplier.");
+      return;
+    }
 
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
-          },
+    // Convert price and stock to numbers before sending
+    const payload = {
+      ...formData,
+      price: Number(formData.price),
+      stock: Number(formData.stock),
+    };
+    if (editProduct) {
+      try {
+        const responce = await axios.put(
+          `http://localhost:5000/api/products/${editProduct}`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+            },
+          }
+        );
+        if (responce.data.success) {
+          alert("product updated successfully");
+          fetchProducts();
+          setOpenModel(false);
+          setEditProduct(false);
+          setFormData({
+            name: "",
+            description: "",
+            price: "",
+            stock: "",
+            categoryId: "",
+            supplierId: "",
+          });
+        } else {
+          alert("Error updating product.please try again");
         }
-      );
-
-      if (response.data.success) {
-        //fetchSuppliers();
-        alert("Product added successfully");
-        setOpenModel(false);
-        // setAddModel(false);
-        setFormData({
-          name: "",
-          description: "",
-          price: "",
-          stock: "",
-          categoryId: "",
-          supplierId: "",
-        });
-      } else {
-        //  console.error("Error editing suplier:", response.data);
-        alert("error adding products.please try again.");
+      } catch (error) {
+        alert("Error updating product.please try again");
       }
-    } catch (error) {
-      console.error("Error adding suplier ", error);
-      alert("Error adding product,please try again");
+      return;
+    } else {
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/products/add",
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+            },
+          }
+        );
+
+        if (response.data.success) {
+          //fetchSuppliers();
+          alert("Product added successfully");
+          fetchProducts();
+          setOpenModel(false);
+          setEditProduct(null);
+          // setAddModel(false);
+          setFormData({
+            name: "",
+            description: "",
+            price: "",
+            stock: "",
+            categoryId: "",
+            supplierId: "",
+          });
+        } else {
+          //  console.error("Error editing suplier:", response.data);
+          alert("error adding products.please try again.");
+        }
+      } catch (error) {
+        console.error("Error adding suplier ", error);
+        alert("Error adding product,please try again");
+      }
     }
   };
   return (
@@ -104,8 +230,67 @@ const Product = () => {
           className="px-4 py-1.5 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-900"
           onClick={() => setOpenModel(true)}
         >
-          Add Suplier
+          Add Product
         </button>
+      </div>
+
+      <div>
+        <table className="w-full border-collapse border border-gray-300 mt-4">
+          <thead>
+            <tr className="bg-gray-200">
+              <th className="border border-gray-300 p-2">S No</th>
+              <th className="border border-gray-300 p-2">Product name</th>
+              <th className="border border-gray-300 p-2">Category name</th>
+              <th className="border border-gray-300 p-2">Supplier name</th>
+              <th className="border border-gray-300 p-2">Price</th>
+              <th className="border border-gray-300 p-2">Stock</th>
+              <th className="border border-gray-300 p-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product, index) => (
+              <tr key={product._id}>
+                <td className="border border-gray-300 p-2">{index + 1}</td>
+                <td className="border border-gray-300 p-2">{product.name}</td>
+                <td className="border border-gray-300 p-2">
+                  {product.categoryId.categoryName}
+                </td>
+                <td className="border border-gray-300 p-2">
+                  {product.supplierId.name}
+                </td>
+                <td className="border border-gray-300 p-2">{product.price}</td>
+                <td className="border border-gray-300 p-2">
+                  <span className="px-2 py-1 rounded-full font-semibold">
+                    {product.stock == 0 ? (
+                      <span className="text-green-500">{product.stock}</span>
+                    ) : product.stock < 5 ? (
+                      <span className="text-yellow-100 text-yellow-600">
+                        {product.stock}
+                      </span>
+                    ) : (
+                      <span className="text-green-100">{product.stock}</span>
+                    )}
+                  </span>
+                </td>
+                <td className="border border-gray-300 p-2">
+                  <button
+                    className="px-2 py-1 bg-yellow-500 text-white rounded cursor-pointer mr-2"
+                    onClick={() => handdleEdit(product)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="px-2 py-1 bg-red-500 text-white rounded cursor-pointer"
+                    onClick={() => handdleDelete(product._id)}
+                  >
+                    delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/* {filteredSuppliers.length === 0 && <div>No record</div>} */}
       </div>
 
       {opentModel && (
@@ -114,7 +299,7 @@ const Product = () => {
             <h1 className="text-xl font-bold">Add Product</h1>
             <button
               className="absolute top-4 right-4 font-bold text-lg cursor-pointer"
-              onClick={() => setOpenModel(false)}
+              onClick={closeModel}
             >
               X
             </button>
@@ -156,7 +341,12 @@ const Product = () => {
               />
 
               <div className="w-full border">
-                <select name="category" className="w-full p-2">
+                <select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onChange={handdleChange}
+                  className="w-full p-2"
+                >
                   <option value="">Select Category</option>
                   {categories &&
                     categories.map((category) => (
@@ -168,7 +358,12 @@ const Product = () => {
               </div>
 
               <div className="w-full border">
-                <select name="supplier" className="w-full p-2">
+                <select
+                  name="supplierId"
+                  value={formData.supplierId}
+                  onChange={handdleChange}
+                  className="w-full p-2"
+                >
                   <option value="">Select supplier</option>
                   {suppliers &&
                     suppliers.map((suplier) => (
@@ -184,13 +379,13 @@ const Product = () => {
                   type="submit"
                   className="w-full rounded-md bg-green-500 text-white p-3 cursor-pointer hover:bg-green-800"
                 >
-                  Add Prouct
+                  {editProduct ? "save changes" : "Add Product"}
                 </button>
 
                 <button
                   type="button"
                   className="w-full mt-2 rounded-md bg-red-500 text-white p-3 cursor-pointer hover:bg-red-600"
-                  onClick={() => setOpenModel(false)}
+                  onClick={closeModel}
                 >
                   Cancel
                 </button>
