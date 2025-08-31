@@ -6,6 +6,8 @@ import authRoutes from "./routes/auth.js";
 import categoryRoutes from "./routes/category.js";
 import supplierRoutes from "./routes/suplier.js";
 import productRoute from "./routes/product.js";
+import userRoutes from "./routes/users.js";
+import userRoute from "./routes/User.js";
 
 dotenv.config();
 const app = express();
@@ -18,6 +20,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/supplier", supplierRoutes);
 app.use("/api/products", productRoute);
+app.use("/api/users", userRoutes);
+app.use("/api/users", userRoute);
 
 app.listen(PORT, () => {
   connectDb();
