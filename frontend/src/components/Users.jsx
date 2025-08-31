@@ -1,20 +1,19 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { data } from "react-router";
+//import { data } from "react-router";
 
-const Categories = () => {
-  const [formData,setFormData] = useState({
-    name:"",
-    email:"",
-    password:"",
-    address:"",
-    role:"",
-
-  })
+const Users = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    address: "",
+    role: "",
+  });
   const [users, setUsers] = useState([]);
-  const [loading,setLoading] = useState(true);
- 
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -24,8 +23,9 @@ const Categories = () => {
           Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
         },
       });
-     
+
       setUsers(responce.data.users);
+      setFilteredUsers(responce.data.users);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching Users", error);
@@ -33,47 +33,54 @@ const Categories = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    setFilteredUsers(
+      users.filter((user) =>
+        user.name.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    );
+  };
+
   useEffect(() => {
-   // fetchCategories();
+    fetchUsers();
   }, []);
 
   const handdleSubmit = async (e) => {
     e.preventDefault();
-   
-      const response = await axios.post(
-        "http://localhost:5000/api/users/add",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
-          },
-        }
-      );
 
-      if (response.data.success) {
-        alert("category added successfully");
-       setFormData({
-        name:"",
-        email:"",
-        password:"",
-        address:"",
-        role:"",
-       })
-        // fetchCategories();
-      } else {
-        console.error("Error editing user:");
-        alert("error editing user.please try again.");
+    const response = await axios.post(
+      "http://localhost:5000/api/users/add",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
+        },
       }
+    );
+
+    if (response.data.success) {
+      alert("category added successfully");
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        address: "",
+        role: "",
+      });
+      fetchUsers();
+    } else {
+      console.error("Error editing user:");
+      alert("error editing user.please try again.");
     }
   };
 
-const handleChange = (e) =>{
-    const {name,value} = e.target;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prevData) => ({
-        ...prevData,
-        [name]:value,
-    })) 
-}
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handdleDelete = async (id) => {
     const confirmDelete = window.confirm(
@@ -91,9 +98,9 @@ const handleChange = (e) =>{
         );
         if (response.data.success) {
           alert("Users deleted successfully");
-        //   fetchCategories();
+          fetchUsers();
         } else {
-          console.error("Error deleting user:", data);
+          console.error("Error deleting user:", response.data);
           alert("Error deleting user,please try again.");
         }
       } catch (error) {
@@ -103,24 +110,22 @@ const handleChange = (e) =>{
     }
   };
 
-
-  if (loading) return <div>Loding....</div>;
+  if (loading) return <div>Loading....</div>;
   return (
     <div className="bg-green-300 p-4">
       <h1 className="text-2xl font-bold mb-8">Users Management</h1>
       <div className="flex flex-col lg:flex-row gap-4">
         <div className="lg:w-1/3">
           <div className="bg-white shadow-md rounded-lg p-4">
-            <h2 className="text-center text-xl font-bold mb-4">
-              {editCategory ? "Edit category" : "Add Category"}
-            </h2>
+            <h2 className="text-center text-xl font-bold mb-4">Add user</h2>
             <form className="space-y-4" onSubmit={handdleSubmit}>
               <div>
                 <input
                   type="text"
                   placeholder="Enter name"
                   className="border w-full p-2 rounded-md"
-                   name="name"
+                  name="name"
+                  value={formData.name}
                   onChange={handleChange}
                 />
               </div>
@@ -130,6 +135,7 @@ const handleChange = (e) =>{
                   placeholder="Enter Email"
                   className="border w-full p-2 rounded-md"
                   name="email"
+                  value={formData.email}
                   onChange={handleChange}
                 />
               </div>
@@ -138,44 +144,54 @@ const handleChange = (e) =>{
                   type="password"
                   placeholder="password"
                   className="border w-full p-2 rounded-md"
-                name="password"
-                  onChange={handleChange}
-                />
-              </div>
-
-               <div>
-                <input
-                  type="address"
-                  placeholder="address"
-                  className="border w-full p-2 rounded-md"
-                name="address"
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
                 />
               </div>
 
               <div>
-                <select name="role"  className="border w-full p-2 rounded-md">
-                    <option value="">Select Role</option>
-                     <option value="">Admin</option>
-                      <option value="">Customer</option>
-                </select>
+                <input
+                  type="text"
+                  placeholder="address"
+                  className="border w-full p-2 rounded-md"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                />
               </div>
 
+              <div>
+                <select
+                  name="role"
+                  className="border w-full p-2 rounded-md"
+                  value={formData.role}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Role</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Customer">Customer</option>
+                </select>
+              </div>
 
               <div className="flex space-x-2">
                 <button
                   type="submit"
                   className="w-full rounded-md bg-green-500 text-white p-3 cursor-pointer hover:bg-green-800"
                 >
-                Add user
+                  Add user
                 </button>
-
-               
               </div>
             </form>
           </div>
         </div>
         <div className="lg:w-2/3">
+          <input
+            type="text"
+            placeholder="search"
+            className="p-2 bg-white w-full mb-4 rounded"
+            onChange={handleSearch}
+          />
           <div className="bg-white shadow-md rounded-lg p-4">
             <table className="w-full border-collapse border border-gray-200">
               <thead>
@@ -183,47 +199,50 @@ const handleChange = (e) =>{
                   <th className="border border-gray-200 p-2">S No</th>
                   <th className="border border-gray-200 p-2">Name</th>
                   <th className="border border-gray-200 p-2">Email</th>
-                   <th className="border border-gray-200 p-2">Address</th>
-                    <th className="border border-gray-200 p-2">Role</th>
-                     <th className="border border-gray-200 p-2">Action</th>
+                  <th className="border border-gray-200 p-2">Address</th>
+                  <th className="border border-gray-200 p-2">Role</th>
+                  <th className="border border-gray-200 p-2">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {users && users.map((user, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-200 p-2">{index + 1}</td>
-                    <td className="border border-gray-200 p-2">
-                      {user.name}
-                    </td>
-                     <td className="border border-gray-200 p-2">
-                      {user.email}
-                    </td>
-                     <td className="border border-gray-200 p-2">
-                      {user.address}
-                    </td>
-                     <td className="border border-gray-200 p-2">
-                      {user.role}
-                    </td>
-                    <td className="border border-gray-200 p-2">
-                     
-                      <button
-                        className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
-                        onClick={() => {
-                          handdleDelete(category._id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredUsers &&
+                  filteredUsers.map((user, index) => (
+                    <tr key={user._id || index}>
+                      <td className="border border-gray-200 p-2">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-200 p-2">
+                        {user.name}
+                      </td>
+                      <td className="border border-gray-200 p-2">
+                        {user.email}
+                      </td>
+                      <td className="border border-gray-200 p-2">
+                        {user.address}
+                      </td>
+                      <td className="border border-gray-200 p-2">
+                        {user.role}
+                      </td>
+                      <td className="border border-gray-200 p-2">
+                        <button
+                          className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600"
+                          onClick={() => {
+                            handdleDelete(user._id);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
+            {filteredUsers.length === 0 && <div>No records</div>}
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default Categories;
+export default Users;
