@@ -8,6 +8,7 @@ import Categories from "./components/Categories";
 import Supliers from "./components/Supliers";
 import Product from "./components/Product";
 import Logout from "./components/Logout";
+import Users from "./components/Users";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
 
             <Route path="orders" element={<h1>orders</h1>} />
 
-            <Route path="users" element={<h1>users</h1>} />
+            <Route path="users" element={<Users />} />
 
             <Route path="profile" element={<h1>profile</h1>} />
 
