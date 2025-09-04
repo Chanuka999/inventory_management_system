@@ -9,6 +9,7 @@ import Supliers from "./components/Supliers";
 import Product from "./components/Product";
 import Logout from "./components/Logout";
 import Users from "./components/Users";
+import CustomerProducts from "./components/CustomerProducts";
 
 function App() {
   return (
@@ -40,10 +41,10 @@ function App() {
 
             <Route path="logout" element={<Logout />} />
           </Route>
-          <Route
-            path="/customer/dashboard"
-            element={<h1>Customer dashboard</h1>}
-          />
+          <Route path="/customer-dashboard" element={<Dashboard />}>
+            <Route index element={<CustomerProducts />}></Route>
+          </Route>
+
           <Route path="/login" element={<Login />} />
           <Route
             path="/unauthorized"
