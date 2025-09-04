@@ -186,7 +186,7 @@ const Product = () => {
           alert("Error updating product.please try again");
         }
       } catch (error) {
-        alert("Error updating product.please try again");
+        alert("Error updating product.please try again", error);
       }
       return;
     } else {
