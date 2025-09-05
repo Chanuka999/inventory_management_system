@@ -39,6 +39,29 @@ const CustomerProducts = () => {
       )
     );
   };
+
+  const handdleChangeCategory = (e) => {
+    const value = e.target.value;
+    if (!value) {
+      setFilterProducts(products);
+    } else {
+      setFilterProducts(
+        products.filter((product) => {
+          if (!product.categoryId) return false;
+          if (typeof product.categoryId === "string") {
+            return product.categoryId === value;
+          }
+          if (
+            typeof product.categoryId === "object" &&
+            product.categoryId._id
+          ) {
+            return String(product.categoryId._id) === String(value);
+          }
+          return false;
+        })
+      );
+    }
+  };
   return (
     <div>
       <div className="py-4 px-6">
@@ -46,11 +69,16 @@ const CustomerProducts = () => {
       </div>
       <div className="py-4 px-6 flex justify-between items-center">
         <div>
-          <select name="category" id="" className="bg-white border p-1 rounded">
+          <select
+            name="category"
+            id=""
+            className="bg-white border p-1 rounded"
+            onChange={handdleChangeCategory}
+          >
             <option value="">Select category</option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat.name}>
-                {cat.name}
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.categoryName}
               </option>
             ))}
           </select>
