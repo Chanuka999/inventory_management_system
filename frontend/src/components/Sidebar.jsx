@@ -67,9 +67,9 @@ const Sidebar = () => {
   const customerItem = [
     {
       name: "Products",
-      path: "/customer-dashboard/products",
+      path: "/customer-dashboard",
       icon: <FaBox />,
-      isparent: false,
+      isparent: true,
     },
     {
       name: "Orders",
