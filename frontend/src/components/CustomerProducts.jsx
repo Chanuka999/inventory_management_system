@@ -90,7 +90,7 @@ const CustomerProducts = () => {
     e.preventDefault();
     try {
       const responce = await axios.post(
-        "http://localhost:5000/api/products",
+        "http://localhost:5000/api/orders/add",
         orderData,
         {
           headers: {
@@ -107,9 +107,10 @@ const CustomerProducts = () => {
           total: 0,
           price: 0,
         });
+        alert("order added successfuly");
       }
     } catch (error) {
-      alert("Error", error.message);
+      alert("Error", error);
     }
   };
 
