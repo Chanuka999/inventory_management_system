@@ -8,6 +8,7 @@ import supplierRoutes from "./routes/suplier.js";
 import productRoute from "./routes/product.js";
 import userRoutes from "./routes/users.js";
 import userRoute from "./routes/User.js";
+import orderRouter from "./routes/order.js";
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/supplier", supplierRoutes);
 app.use("/api/products", productRoute);
 app.use("/api/users", userRoutes);
 app.use("/api/users", userRoute);
+app.use("/api/orders", orderRouter);
 
 app.listen(PORT, () => {
   connectDb();
