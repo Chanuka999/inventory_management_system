@@ -1,4 +1,4 @@
-import Supplier from "../models/Suplier.js";
+import Supplier from "../models/Supplier.js";
 const addSupplier = async (req, res) => {
   try {
     const { name, email, number, address } = req.body;
@@ -30,10 +30,10 @@ const addSupplier = async (req, res) => {
 
 const getSuppliers = async (req, res) => {
   try {
-    const supliers = await Supplier.find();
-    return res.status(200).json({ success: true, supliers });
+    const suppliers = await Supplier.find();
+    return res.status(200).json({ success: true, suppliers });
   } catch (error) {
-    console.error("Error fetching supliers:", error);
+    console.error("Error fetching suppliers:", error);
     return res
       .status(500)
       .json({ success: false, message: "server error in getting" });

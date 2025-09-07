@@ -1,4 +1,4 @@
-import Supplier from "../models/Suplier.js";
+import Supplier from "../models/Supplier.js";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 
@@ -38,13 +38,13 @@ const getProducts = async (req, res) => {
       // fallback: return products without population
       products = await Product.find();
     }
-    const supliers = await Supplier.find();
+    const suppliers = await Supplier.find();
     const categories = await Category.find();
     return res
       .status(200)
-      .json({ success: true, products, supliers, categories });
+      .json({ success: true, products, suppliers, categories });
   } catch (error) {
-    console.error("Error fetching supliers:", error);
+    console.error("Error fetching suppliers:", error);
     return res
       .status(500)
       .json({ success: false, message: "server error in getting" });
