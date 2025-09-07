@@ -40,10 +40,10 @@ const getOrders = async (req, res) => {
     const orders = await Order.find({ customer: userId })
       .populate({
         path: "product",
-        populate: { path: "category", select: "categoryName" },
+        populate: { path: "categoryId", select: "categoryName" },
         select: "name price",
       })
-      .populate("user", "name email");
+      .populate("customer", "name email");
     return res.status(200).json({ success: true, orders });
   } catch (error) {
     console.log(error);
