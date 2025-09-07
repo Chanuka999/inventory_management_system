@@ -203,7 +203,7 @@ const Supliers = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredSuppliers.map((suplier, index) => (
+              {(filteredSuppliers || []).map((suplier, index) => (
                 <tr key={suplier._id}>
                   <td className="border border-gray-300 p-2">{index + 1}</td>
                   <td className="border border-gray-300 p-2">{suplier.name}</td>
@@ -234,7 +234,9 @@ const Supliers = () => {
               ))}
             </tbody>
           </table>
-          {filteredSuppliers.length === 0 && <div>No record</div>}
+          {filteredSuppliers && filteredSuppliers.length === 0 && (
+            <div>No record</div>
+          )}
         </div>
       )}
 
