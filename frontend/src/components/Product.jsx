@@ -264,10 +264,10 @@ const Product = () => {
                   <td className="border border-gray-300 p-2">{index + 1}</td>
                   <td className="border border-gray-300 p-2">{product.name}</td>
                   <td className="border border-gray-300 p-2">
-                    {product.categoryId.categoryName}
+                    {product.categoryId?.categoryName || "Unknown"}
                   </td>
                   <td className="border border-gray-300 p-2">
-                    {product.supplierId.name}
+                    {product.supplierId?.name || "Unknown"}
                   </td>
                   <td className="border border-gray-300 p-2">
                     {product.price}
