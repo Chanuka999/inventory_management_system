@@ -31,7 +31,7 @@ const addUser = async (req, res) => {
   }
 };
 
-const getUser = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
     const users = await User.find();
     return res.status(200).json({ success: true, users });
@@ -40,6 +40,26 @@ const getUser = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "server error in getting" });
+  }
+};
+
+const getUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId).select("password");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "user not found" });
+    }
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.error("Error fetching user profile", error);
+    return res.status(500).json({
+      success: false,
+      message: "server error in getting user profile",
+    });
   }
 };
 
@@ -65,4 +85,4 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { addUser, getUser, deleteUser };
+export { addUser, getUser, deleteUser, getUsers };
