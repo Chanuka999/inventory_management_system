@@ -25,6 +25,7 @@ app.use("/api/products", productRoute);
 app.use("/api/users", userRoutes);
 app.use("/api/users", userRoute);
 app.use("/api/orders", orderRouter);
+app.use("api/dashboard", dashboardRouter);
 
 app.listen(PORT, () => {
   connectDb();
