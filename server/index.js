@@ -9,6 +9,7 @@ import productRoute from "./routes/product.js";
 import userRoutes from "./routes/users.js";
 import userRoute from "./routes/User.js";
 import orderRouter from "./routes/order.js";
+import dashboardRouter from "./routes/dashboard.js";
 
 dotenv.config();
 const app = express();
