@@ -22,7 +22,9 @@ const Summry = () => {
           Authorization: `Bearer ${localStorage.getItem("pos-token")}`,
         },
       });
-      setDashboardData(responce.data);
+      console.log(responce.data.dashboardData);
+
+      setDashboardData(responce.data.dashboardData);
     } catch (error) {
       alert(error.message);
     } finally {
@@ -115,7 +117,7 @@ const Summry = () => {
                 <li key={index} className="text-grey-600">
                   <strong>{product.name}</strong> - {product.stock} left{""}
                   <span className="text-grey-600">
-                    ({product.category.name})
+                    ({product.categoryId.categoryName})
                   </span>
                 </li>;
               })}
