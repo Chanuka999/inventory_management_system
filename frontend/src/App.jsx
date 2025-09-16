@@ -36,11 +36,11 @@ function App() {
 
             <Route path="suppliers" element={<Supliers />} />
 
-            <Route path="orders" element={<h1>orders</h1>} />
+            <Route path="orders" element={<Orders />} />
 
             <Route path="users" element={<Users />} />
 
-            <Route path="profile" element={<h1>profile</h1>} />
+            <Route path="profile" element={<Profile />} />
 
             <Route path="logout" element={<Logout />} />
           </Route>
